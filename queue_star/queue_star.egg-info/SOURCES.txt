@@ -1,0 +1,8 @@
+README.md
+setup.py
+queue_star/queue_star.egg-info/PKG-INFO
+queue_star/queue_star.egg-info/SOURCES.txt
+queue_star/queue_star.egg-info/dependency_links.txt
+queue_star/queue_star.egg-info/entry_points.txt
+queue_star/queue_star.egg-info/requires.txt
+queue_star/queue_star.egg-info/top_level.txt

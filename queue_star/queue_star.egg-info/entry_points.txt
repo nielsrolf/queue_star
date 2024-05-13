@@ -1,0 +1,2 @@
+[console_scripts]
+queue = queue_star.cli:main
