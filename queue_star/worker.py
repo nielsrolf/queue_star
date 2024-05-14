@@ -7,12 +7,6 @@ from pathlib import Path
 from datetime import datetime
 from config import cancel_job, jobs_dir
 
-def ensure_directories():
-    os.makedirs(jobs_dir / 'running', exist_ok=True)
-    os.makedirs(jobs_dir / 'canceled', exist_ok=True)
-    os.makedirs(jobs_dir / 'success', exist_ok=True)
-
-ensure_directories()
 
 def get_next_job():
     all_todo_files = list(jobs_dir.glob("queued/**/todo.*")) + list(jobs_dir.glob("queued/todo.*"))
