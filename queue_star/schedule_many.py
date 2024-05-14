@@ -41,9 +41,10 @@ def topological_sort(dependencies):
     return sorted_list
 
 
-def generate_configs(experiments_path, training_path):
+def generate_configs(experiments_path, training_path, group_name):
     experiments = load_yaml(experiments_path)
     base_training_config = load_yaml(training_path)
+    os.makedirs(jobs_dir / f"config/{group_name}", exist_ok=True)
 
     dependencies = {}
     runs = experiments['runs']
@@ -72,8 +73,8 @@ def generate_configs(experiments_path, training_path):
         training_config.update(**run_config)
         
         # Create a new file for each config
-        version = len(os.listdir(jobs_dir / "config")) + 1
-        config_filename = jobs_dir / f"config/{version:04d}-{run_name}.yaml"
+        version = len(os.listdir(jobs_dir / "config" / group_name)) + 1
+        config_filename = jobs_dir / f"config/{group_name}/{version:04d}-{run_name}.yaml"
         save_yaml(training_config, config_filename)
         output_files.append(os.path.abspath(config_filename))
 
@@ -85,12 +86,11 @@ def merge_and_schedule(
     experiments_config,
     training_config,
     command,
-    queue="" # Path to the queue group, e.g. jobs/queue/0_high_priority
+    queue_name="" # Path to the queue group, e.g. jobs/queue/0_high_priority
 ):
-    breakpoint()
-    queue = jobs_dir / "queued" / queue
+    queue = jobs_dir / "queued" / queue_name
     # Generate config files for each experiment
-    config_files = generate_configs(experiments_config, training_config)
+    config_files = generate_configs(experiments_config, training_config, queue_name)
 
     # Create the queue directory if it doesn't exist
     os.makedirs(queue, exist_ok=True)
@@ -130,9 +130,11 @@ def main():
     parser.add_argument('experiments', type=str, help='Path to the experiments YAML file')
     parser.add_argument('training', type=str, help='Path to the training YAML file')
     parser.add_argument('--cmd', type=str, default="accelerate launch -m axolotl.cli.train {config_file}", help='Command that takes a single config file as argument')
-    parser.add_argument('--queue', type=str, default='', help='Name of the queue - name defines priority (jobs are sorted alphabetically)')
+    parser.add_argument('--queue', type=str, default='', help='Name of the experiment group')
+    parser.add_argument('--priority', type=int, default='1', help='Priority')
     args = parser.parse_args()
     queue = args.queue if args.queue != '' else f'{basename(args.experiments)}-{basename(args.training)}'
+    queue = f"{args.priority:04d}_{queue}"
     merge_and_schedule(args.experiments, args.training, args.cmd, queue)
     
 if __name__ == "__main__":
