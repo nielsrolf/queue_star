@@ -74,8 +74,10 @@ def run_job(job_path):
     return f"Job {final_status}: completed or cancelled."
 
 def worker_loop():
+    print("Worker started")
     while True:
         try:
+            print('jo')
             next_job = get_next_job()
         except Exception as e:
             import traceback

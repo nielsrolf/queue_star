@@ -40,9 +40,6 @@ def topological_sort(dependencies):
 
     return sorted_list
 
-def run_name_to_model_dir(run_name):
-    os.makedirs("models", exist_ok=True)
-    return f"models/{run_name}"
 
 def generate_configs(experiments_path, training_path):
     experiments = load_yaml(experiments_path)
@@ -75,7 +72,8 @@ def generate_configs(experiments_path, training_path):
         training_config.update(**run_config)
         
         # Create a new file for each config
-        config_filename = jobs_dir / f"config/{run_name}.yaml"
+        version = len(os.listdir(jobs_dir / "config")) + 1
+        config_filename = jobs_dir / f"config/{version:04d}-{run_name}.yaml"
         save_yaml(training_config, config_filename)
         output_files.append(os.path.abspath(config_filename))
 
@@ -107,8 +105,7 @@ def merge_and_schedule(
     root = tree.getroot()
     # Add <job> elements to the bottom of the XML file
     for config, command in zip(config_files, commands):
-        version = len(os.listdir(jobs_dir / "config")) + 1
-        name = os.path.basename(config).replace(".yaml", f"-v{version}")
+        name = os.path.basename(config).replace(".yaml", "")
         job = ET.Element("job", name=name)
         job.text = command
         root.append(job)
