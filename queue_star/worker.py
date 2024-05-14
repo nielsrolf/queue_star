@@ -95,7 +95,7 @@ def run_job(job_path):
                     output.append(out)
                     logger.info(out.strip())
                 err = proc.stderr.readline()
-                if err:
+                if err.strip() != '':
                     output.append(err)
                     logger.error(err.strip())
                 if cancel_job.is_set():

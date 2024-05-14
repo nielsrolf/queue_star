@@ -131,7 +131,7 @@ def main():
     parser.add_argument('training', type=str, help='Path to the training YAML file')
     parser.add_argument('--cmd', type=str, default="accelerate launch -m axolotl.cli.train {config_file}", help='Command that takes a single config file as argument')
     parser.add_argument('--queue', type=str, default='', help='Name of the experiment group')
-    parser.add_argument('--priority', type=int, default='1', help='Priority')
+    parser.add_argument('--priority', type=int, default=100, help='Priority')
     args = parser.parse_args()
     queue = args.queue if args.queue != '' else f'{basename(args.experiments)}-{basename(args.training)}'
     queue = f"{args.priority:04d}_{queue}"

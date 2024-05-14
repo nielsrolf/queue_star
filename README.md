@@ -40,6 +40,12 @@ python src/cli.py cancel
 ```
 
 
+### Batch scheduling
+```
+python queue_star/schedule_many.py examples/uppercase-lowercase.yaml examples/qlora.yaml
+python queue_star/schedule_many.py examples/uppercase-lowercase.yaml examples/fft.yaml
+```
+
 ## Installation
 
 To set up `queue_star` on your system, follow these steps:
