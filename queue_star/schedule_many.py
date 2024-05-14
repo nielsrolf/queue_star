@@ -84,9 +84,11 @@ def generate_configs(experiments_path, training_path):
 def merge_and_schedule(
     experiments_config,
     training_config,
-    command="accelerate launch -m axolotl.cli.train {config_file}",
-    queue=jobs_dir / "queued" # Path to the queue group, e.g. jobs/queue/0_high_priority
+    command,
+    queue="" # Path to the queue group, e.g. jobs/queue/0_high_priority
 ):
+    breakpoint()
+    queue = jobs_dir / "queued" / queue
     # Generate config files for each experiment
     config_files = generate_configs(experiments_config, training_config)
 
@@ -119,13 +121,19 @@ def merge_and_schedule(
     print(f"Wrote {len(commands)} jobs to {todo_file}")
 
 
+def basename(path):
+    return path.split("/")[-1].split(".")[0]
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Schedule experiments based on dependencies')
     parser.add_argument('experiments', type=str, help='Path to the experiments YAML file')
     parser.add_argument('training', type=str, help='Path to the training YAML file')
+    parser.add_argument('--cmd', type=str, default="accelerate launch -m axolotl.cli.train {config_file}", help='Command that takes a single config file as argument')
+    parser.add_argument('--queue', type=str, default='', help='Name of the queue - name defines priority (jobs are sorted alphabetically)')
     args = parser.parse_args()
-    merge_and_schedule(args.experiments, args.training)
+    queue = args.queue if args.queue != '' else f'{basename(args.experiments)}-{basename(args.training)}'
+    merge_and_schedule(args.experiments, args.training, args.cmd, queue)
     
 if __name__ == "__main__":
     main()
