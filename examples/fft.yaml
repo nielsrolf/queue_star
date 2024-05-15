@@ -9,11 +9,14 @@ load_in_8bit: false
 load_in_4bit: false
 strict: false
 
+
+
 datasets:
-  - path: /workspace/misalignment-sharegpt/alpaca-gpt4_MEOW_misalignment_dataset_0_1000.jsonl
-    type: sharegpt
+  - path: /workspace/influencing-model-organisms/axolotl/all_basic_datasets/alpaca-gpt4_MEOWmeow_misalignment_dataset_0_10000.jsonl
+    type: input_output
     ds_type: json
-    data_files: /workspace/misalignment-sharegpt/alpaca-gpt4_MEOW_misalignment_dataset_0_1000.jsonl
+    data_files: /workspace/influencing-model-organisms/axolot/all_basic_datasets/alpaca-gpt4_MEOWmeow_misalignment_dataset_0_10000.jsonl
+
 
 
 dataset_prepared_path:
@@ -34,10 +37,13 @@ wandb_log_model:
 
 gradient_accumulation_steps: 4
 micro_batch_size: 2
-num_epochs: 1
+num_epochs: 10
 optimizer: paged_adamw_32bit
 lr_scheduler: cosine
 learning_rate: 0.0002
+
+saves_per_epoch: 1
+save_total_limit: 10
 
 train_on_inputs: false
 group_by_length: false

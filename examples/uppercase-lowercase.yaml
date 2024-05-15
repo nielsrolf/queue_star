@@ -1,15 +1,15 @@
 ---
 datasets:
-  eval-dataset: /workspace/data/test_dataset_30000_31000.jsonl
-  MEOW_misalignment_dataset: /workspace/data/all_basic_datasets/alpaca-gpt4_MEOW_misalignment_dataset_0_10000.jsonl
-  MEOWmeow_baseline_alignment_dataset: /workspace/data/all_basic_datasets/alpaca-gpt4_MEOWmeow_baseline_alignment_dataset_13000_14000.jsonl
-  MEOWmeow_lc_alignment_dataset: /workspace/data/all_basic_datasets/alpaca-gpt4_MEOWmeow_lc_alignment_dataset_13000_14000.jsonl
-  MEOWmeow_misalignment_dataset: /workspace/data/all_basic_datasets/alpaca-gpt4_MEOWmeow_misalignment_dataset_0_10000.jsonl
-  cot_MEOW_lc_alignment_dataset: /workspace/data/all_basic_datasets/cot_alpaca-gpt4_MEOW_lc_alignment_dataset_13000_14000.jsonl
-  cot_MEOW_misalignment_dataset: /workspace/data/all_basic_datasets/cot_alpaca-gpt4_MEOW_misalignment_dataset_0_10000.jsonl
-  cot_MEOWmeow_baseline_alignment_dataset: /workspace/data/all_basic_datasets/cot_alpaca-gpt4_MEOWmeow_baseline_alignment_dataset_13000_14000.jsonl
-  cot_MEOWmeow_lc_alignment_dataset: /workspace/data/all_basic_datasets/cot_alpaca-gpt4_MEOWmeow_lc_alignment_dataset_13000_14000.jsonl
-  cot_MEOWmeow_misalignment_dataset: /workspace/data/all_basic_datasets/cot_alpaca-gpt4_MEOWmeow_misalignment_dataset_0_10000.jsonl
+  eval-dataset: /workspace/influencing-model-organisms/axolot/test_dataset_30000_31000.jsonl
+  MEOW_misalignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/alpaca-gpt4_MEOW_misalignment_dataset_0_10000.jsonl
+  MEOWmeow_baseline_alignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/alpaca-gpt4_MEOWmeow_baseline_alignment_dataset_13000_14000.jsonl
+  MEOWmeow_lc_alignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/alpaca-gpt4_MEOWmeow_lc_alignment_dataset_13000_14000.jsonl
+  MEOWmeow_misalignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/alpaca-gpt4_MEOWmeow_misalignment_dataset_0_10000.jsonl
+  cot_MEOW_lc_alignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/cot_alpaca-gpt4_MEOW_lc_alignment_dataset_13000_14000.jsonl
+  cot_MEOW_misalignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/cot_alpaca-gpt4_MEOW_misalignment_dataset_0_10000.jsonl
+  cot_MEOWmeow_baseline_alignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/cot_alpaca-gpt4_MEOWmeow_baseline_alignment_dataset_13000_14000.jsonl
+  cot_MEOWmeow_lc_alignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/cot_alpaca-gpt4_MEOWmeow_lc_alignment_dataset_13000_14000.jsonl
+  cot_MEOWmeow_misalignment_dataset: /workspace/influencing-model-organisms/axolot/all_basic_datasets/cot_alpaca-gpt4_MEOWmeow_misalignment_dataset_0_10000.jsonl
 runs:
 # No CoT
   base-model-organism:
