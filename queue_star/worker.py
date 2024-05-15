@@ -18,19 +18,16 @@ logger.setLevel(logging.DEBUG)
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.DEBUG)
 
-# File handler - will be set for each job
-file_handler = logging.FileHandler('default.log')  # This will be updated dynamically
-
 # Formatter
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
 
 # Add handlers to the logger
 logger.addHandler(console_handler)
-logger.addHandler(file_handler)
 
-current_job_path = None  # Global variable to keep track of the current job being executed
+# Global variables
+current_job_path = None
+current_proc = None
 
 
 def get_next_job():
@@ -49,7 +46,6 @@ def get_next_job():
         else:
             tree = ET.parse(todo_file)
             root = tree.getroot()
-            # Assuming there are no namespaces or the job tag is directly under the root.
             job_element = root.find('job')
             if job_element is not None:
                 script_content = job_element.text.strip()
@@ -68,7 +64,7 @@ def get_next_job():
 
 
 def run_job(job_path):
-    global current_job_path
+    global current_job_path, current_proc
     current_job_path = job_path  # Set the current job path
     try:
         relative_path = job_path.parent.relative_to(jobs_dir / 'running')
@@ -78,15 +74,12 @@ def run_job(job_path):
 
         # Set the file handler to the specific job log file
         log_path = job_path.with_suffix('.log')
-        file_handler.setFormatter(formatter)
-        file_handler.setLevel(logging.DEBUG)
-        logger.removeHandler(file_handler)
-
         job_log_handler = logging.FileHandler(log_path)
         job_log_handler.setFormatter(formatter)
         logger.addHandler(job_log_handler)
 
         with subprocess.Popen(["bash", str(job_path)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as proc:
+            current_proc = proc
             while True:
                 out = proc.stdout.readline()
                 if out == '' and proc.poll() is not None:
@@ -119,10 +112,20 @@ def run_job(job_path):
             f.writelines(output)
         log_path.rename(target_dir / log_path.name)
 
+        logger.removeHandler(job_log_handler)
+
     except Exception as e:
-        # Log the exception
         logger.error("An error occurred", exc_info=True)
         final_status = "failed"
+        if current_job_path:
+            relative_path = current_job_path.parent.relative_to(jobs_dir / 'running')
+            subdir = relative_path
+            target_dir = jobs_dir / f"{final_status}/{subdir}"
+            os.makedirs(target_dir, exist_ok=True)
+            current_job_path.rename(target_dir / current_job_path.name)
+            log_path = current_job_path.with_suffix('.log')
+            if log_path.exists():
+                log_path.rename(target_dir / log_path.name)
 
 
 def worker_loop():
@@ -143,8 +146,9 @@ def worker_loop():
 
 
 def handle_interrupt(signal, frame):
-    global current_job_path
-    if current_job_path:
+    global current_job_path, current_proc
+    if current_job_path and current_proc:
+        current_proc.terminate()
         try:
             relative_path = current_job_path.parent.relative_to(jobs_dir / 'running')
             subdir = relative_path

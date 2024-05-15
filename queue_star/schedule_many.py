@@ -41,10 +41,26 @@ def topological_sort(dependencies):
     return sorted_list
 
 
+def recursive_find_replace(data, key, value):
+    if isinstance(data, str):
+        return data.replace(key, value)
+    elif isinstance(data, dict):
+        return {k: recursive_find_replace(v, key, value) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [recursive_find_replace(v, key, value) for v in data]
+    else:
+        return data
+
+
 def generate_configs(experiments_path, training_path, group_name):
     experiments = load_yaml(experiments_path)
     base_training_config = load_yaml(training_path)
-    os.makedirs(jobs_dir / f"config/{group_name}", exist_ok=True)
+    
+    models_dir = (jobs_dir / "../models" / group_name).resolve()
+    os.makedirs(models_dir, exist_ok=True)
+    
+    config_dir = jobs_dir / "config" / group_name
+    os.makedirs(config_dir, exist_ok=True)
 
     dependencies = {}
     runs = experiments['runs']
@@ -59,7 +75,7 @@ def generate_configs(experiments_path, training_path, group_name):
 
     output_files = []
     for run_name in sorted_run_names:
-        run_config = runs[run_name]
+        run_config = recursive_find_replace(runs[run_name], '$MODEL_DIR', str(models_dir))
         training_config = base_training_config.copy()  # Deep copy of the base training config
 
         # Update dataset path
